@@ -13,6 +13,9 @@ on:
     tags: ["v*"]
   workflow_dispatch: {}
 
+permissions:
+  contents: write   # нужно, чтобы шаг создания Release мог запушить файлы
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -24,6 +27,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
         run: |
@@ -31,7 +36,7 @@ jobs:
           pip install -r requirements.txt
           pip install pyinstaller
 
-      - name: Build NetSuite.exe (GUI: камеры + сканер сети)
+      - name: Build NetSuite.exe (GUI - камеры + сканер сети)
         run: >
           pyinstaller --noconfirm --onefile --windowed --name NetSuite
           netsuite.py
